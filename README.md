@@ -31,6 +31,7 @@ Ningún secreto vive en el código. Copia [`.env.example`](.env.example) y compl
 | `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | PostgreSQL (Supabase → **Connect** → *Session pooler* → JDBC) |
 | `JWT_SECRET` | Clave para firmar los tokens (texto largo y aleatorio) |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Cuenta administradora inicial |
+| `ADMIN_SYNC_PASSWORD` | `true`: al arrancar, la contraseña del admin se iguala a `ADMIN_PASSWORD` (para cambiarla desde Render) |
 | `DEMO_CLIENT_EMAIL`, `DEMO_CLIENT_PASSWORD` | Cuenta cliente de demostración (opcional) |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `SUPABASE_BUCKET` | Subida de imágenes a Supabase Storage |
 | `CORS_ORIGINS` | Orígenes permitidos (por defecto GitHub Pages y `localhost:5520`) |

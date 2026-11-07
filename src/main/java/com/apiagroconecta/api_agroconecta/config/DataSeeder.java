@@ -45,6 +45,7 @@ public class DataSeeder implements CommandLineRunner {
     @Value("${app.seed.client.email:}") private String clientEmail;
     @Value("${app.seed.client.password:}") private String clientPassword;
     @Value("${app.seed.image-base:}") private String imageBase;
+    @Value("${app.seed.admin.sync-password:false}") private boolean syncAdminPassword;
 
     public DataSeeder(CategoriaRepository categoriaRepository, ProductoRepository productoRepository,
                       UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder,
@@ -86,6 +87,7 @@ public class DataSeeder implements CommandLineRunner {
     @Transactional
     public void run(String... args) {
         sembrarUsuario(adminEmail, adminPassword, "Administrador", Rol.ADMIN, null);
+        if (syncAdminPassword) sincronizarPassword(adminEmail, adminPassword);
         sembrarUsuario(clientEmail, clientPassword, "Cliente Demo", Rol.CLIENTE, "3001234567");
 
         if (productoRepository.count() > 0) {
@@ -123,6 +125,23 @@ public class DataSeeder implements CommandLineRunner {
             productoRepository.save(producto);
         }
         log.info("Datos iniciales: {} categorías y {} productos creados", categorias.size(), PRODUCTOS.size());
+    }
+
+    /**
+     * Con ADMIN_SYNC_PASSWORD=true, la contraseña del admin se iguala a ADMIN_PASSWORD
+     * en cada arranque. Sirve para cambiarla desde Render sin tocar la base de datos.
+     */
+    private void sincronizarPassword(String email, String password) {
+        if (email == null || email.isBlank() || password == null || password.length() < 8) {
+            return;
+        }
+        usuarioRepository.findByEmail(email.trim().toLowerCase()).ifPresent(u -> {
+            if (!passwordEncoder.matches(password, u.getPassword())) {
+                u.setPassword(passwordEncoder.encode(password));
+                usuarioRepository.save(u);
+                log.info("Contraseña de la cuenta ADMIN actualizada desde ADMIN_PASSWORD");
+            }
+        });
     }
 
     private void sembrarUsuario(String email, String password, String nombre, Rol rol, String telefono) {
