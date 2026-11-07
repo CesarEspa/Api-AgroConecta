@@ -1,0 +1,34 @@
+# Despliegue en Render (Blueprint): New + > Blueprint > selecciona este repositorio.
+# Los valores marcados con sync: false se escriben en el panel de Render, nunca aquí.
+services:
+  - type: web
+    name: api-agroconecta
+    runtime: docker
+    plan: free
+    region: virginia
+    healthCheckPath: /api/v1/categorias
+    envVars:
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: DEMO_CLIENT_EMAIL
+        sync: false
+      - key: DEMO_CLIENT_PASSWORD
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: SUPABASE_BUCKET
+        value: productos
+      - key: CORS_ORIGINS
+        value: https://cesarespa.github.io
